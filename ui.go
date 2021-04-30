@@ -16,6 +16,7 @@ type UI interface {
 	SetBounds(Bounds) error
 	Bind(name string, f interface{}) error
 	Eval(js string) Value
+	Send(method string, params h) Value
 	Done() <-chan struct{}
 	Close() error
 }
@@ -173,4 +174,9 @@ func (u *ui) SetBounds(b Bounds) error {
 
 func (u *ui) Bounds() (Bounds, error) {
 	return u.chrome.bounds()
+}
+
+func (u *ui) Send(method string, params h) Value {
+	v, err := u.chrome.send(method, params)
+	return value{err: err, raw: v}
 }
